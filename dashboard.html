@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - Idleb X IA</title>
+    
+    <!-- SEO -->
+    <meta name="description" content="لوحة التحكم الخاصة بك - إدارة فيديوهاتك ورصيدك وإعداداتك">
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js للرسوم البيانية -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* تنسيقات لوحة التحكم */
+        .dashboard-page {
+            padding-top: 80px;
+            min-height: 100vh;
+            background: var(--bg);
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        
+        /* الشريط الجانبي */
+        .dashboard-sidebar {
+            width: 280px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            position: fixed;
+            top: 80px;
+            right: 0;
+            bottom: 0;
+            padding: 30px 0;
+            overflow-y: auto;
+            transition: all var(--transition-normal);
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .user-profile-sidebar {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .user-avatar-large {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            border: 3px solid var(--primary);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .user-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+        
+        .user-avatar-large:hover .avatar-overlay {
+            opacity: 1;
+        }
+        
+        .user-name-sidebar {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .user-email-sidebar {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        .user-plan-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .sidebar-nav {
+            padding: 20px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-nav a i {
+            width: 20px;
+            color: var(--primary);
+        }
+        
+        .sidebar-nav a:hover {
+            background: var(--bg);
+        }
+        
+        .sidebar-nav a.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .sidebar-nav a.active i {
+            color: white;
+        }
+        
+        /* المحتوى الرئيسي */
+        .dashboard-main {
+            flex: 1;
+            margin-right: 280px;
+            padding: 30px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 2rem;
+            color: var(--text);
+        }
+        
+        .date-display {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        /* بطاقات الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: transform var(--transition-fast);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .stat-change {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-change.positive {
+            color: #10B981;
+        }
+        
+        .stat-change.negative {
+            color: #EF4444;
+        }
+        
+        /* الرسم البياني */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-header h3 {
+            color: var(--text);
+            font-size: 1.2rem;
+        }
+        
+        .chart-period select {
+            padding: 8px 15px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+        }
+        
+        /* بطاقات المهام السريعة */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .quick-action-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: transform var(--transition-fast);
+        }
+        
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .quick-action-card i {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .quick-action-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .quick-action-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* جدول الفيديوهات */
+        .videos-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .videos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .videos-header h3 {
+            color: var(--text);
+            font-size: 1.2rem;
+        }
+        
+        .videos-header button {
+            padding: 8px 20px;
+        }
+        
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .video-item {
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: transform var(--transition-fast);
+        }
+        
+        .video-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-thumbnail video,
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-duration {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+        }
+        
+        .video-info {
+            padding: 15px;
+        }
+        
+        .video-title {
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .video-date {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .video-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .video-actions button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+        
+        .btn-download {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-download:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-delete {
+            background: #EF4444;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #DC2626;
+        }
+        
+        .btn-edit {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-edit:hover {
+            background: var(--border);
+        }
+        
+        /* نافذة رفع الفيديو */
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .upload-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .upload-modal-content {
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .upload-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .upload-modal-header h2 {
+            color: var(--text);
+        }
+        
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        
+        .upload-area-modal {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area-modal:hover {
+            border-color: var(--primary);
+        }
+        
+        .upload-area-modal i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        /* التجاوب مع الجوال */
+        @media (max-width: 768px) {
+            .dashboard-sidebar {
+                transform: translateX(100%);
+            }
+            
+            .dashboard-sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .dashboard-main {
+                margin-right: 0;
+                padding: 20px;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                z-index: 1000;
+                width: 50px;
+                height: 50px;
+                border-radius: var(--radius-full);
+                background: linear-gradient(135deg, var(--primary), var(--secondary));
+                color: white;
+                border: none;
+                cursor: pointer;
+                box-shadow: var(--shadow-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <span class="logo-icon">✨</span>
+                    Idleb <span>X IA</span>
+                </a>
+                
+                <div class="nav-menu" id="navMenu">
+                    <a href="/" class="nav-link">الرئيسية</a>
+                    <a href="/#features" class="nav-link">المميزات</a>
+                    <a href="/#pricing" class="nav-link">الباقات</a>
+                    <a href="/#contact" class="nav-link">اتصل بنا</a>
+                </div>
+                
+                <div class="nav-buttons" id="navButtons">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- لوحة التحكم -->
+    <div class="dashboard-page">
+        <div class="dashboard-container">
+            <!-- الشريط الجانبي -->
+            <aside class="dashboard-sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h2>لوحة التحكم</h2>
+                </div>
+                
+                <div class="user-profile-sidebar" id="userProfileSidebar">
+                    <div class="user-avatar-large" onclick="document.getElementById('avatarInput').click()">
+                        <img id="sidebarAvatar" src="https://www.gravatar.com/avatar/?d=mp" alt="الصورة الشخصية">
+                        <div class="avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="user-name-sidebar" id="sidebarName">مستخدم جديد</div>
+                    <div class="user-email-sidebar" id="sidebarEmail">user@example.com</div>
+                    <div class="user-plan-badge" id="sidebarPlan">باقة مجانية</div>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <a href="#" class="active" onclick="showSection('overview')">
+                        <i class="fas fa-home"></i>
+                        نظرة عامة
+                    </a>
+                    <a href="#" onclick="showSection('videos')">
+                        <i class="fas fa-video"></i>
+                        فيديوهاتي
+                    </a>
+                    <a href="#" onclick="showSection('upload')">
+                        <i class="fas fa-upload"></i>
+                        رفع فيديو جديد
+                    </a>
+                    <a href="#" onclick="showSection('credits')">
+                        <i class="fas fa-coins"></i>
+                        رصيدي
+                    </a>
+                    <a href="#" onclick="showSection('settings')">
+                        <i class="fas fa-cog"></i>
+                        الإعدادات
+                    </a>
+                    <a href="#" onclick="showSection('billing')">
+                        <i class="fas fa-credit-card"></i>
+                        الفواتير
+                    </a>
+                    <a href="#" onclick="showSection('support')">
+                        <i class="fas fa-headset"></i>
+                        الدعم الفني
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        تسجيل خروج
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- زر فتح القائمة في الجوال -->
+            <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- المحتوى الرئيسي -->
+            <main class="dashboard-main">
+                <!-- قسم نظرة عامة -->
+                <div id="overviewSection" class="dashboard-section active">
+                    <div class="dashboard-header">
+                        <h1>مرحباً بك في لوحة التحكم</h1>
+                        <div class="date-display" id="currentDate"></div>
+                    </div>
+                    
+                    <!-- بطاقات الإحصائيات -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="stat-value" id="totalVideos">0</div>
+                            <div class="stat-label">إجمالي الفيديوهات</div>
+                            <div class="stat-change positive" id="videosChange">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+2 هذا الشهر</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-value" id="totalMinutes">0</div>
+                            <div class="stat-label">دقائق معالجة</div>
+                            <div class="stat-change" id="minutesChange">
+                                <i class="fas fa-minus"></i>
+                                <span>ثابت</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-value" id="availableCredits">3</div>
+                            <div class="stat-label">الرصيد المتبقي</div>
+                            <div class="stat-change positive" id="creditsChange">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>تجديد في 15 يوم</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="stat-value" id="storageUsed">0 MB</div>
+                            <div class="stat-label">مساحة مستخدمة</div>
+                            <div class="stat-change" id="storageChange">
+                                <i class="fas fa-minus"></i>
+                                <span>من 2GB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- الرسم البياني -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>نشاطك خلال الأسبوع</h3>
+                            <div class="chart-period">
+                                <select id="chartPeriod" onchange="updateChart()">
+                                    <option value="week">آخر 7 أيام</option>
+                                    <option value="month">آخر 30 يوم</option>
+                                    <option value="year">آخر سنة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                    
+                    <!-- المهام السريعة -->
+                    <div class="quick-actions">
+                        <div class="quick-action-card" onclick="showSection('upload')">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h4>رفع فيديو جديد</h4>
+                            <p>ابدأ معالجة فيديو جديد</p>
+                        </div>
+                        
+                        <div class="quick-action-card" onclick="window.open('/face-swap.html', '_blank')">
+                            <i class="fas fa-face-smile"></i>
+                            <h4>تبديل الوجه</h4>
+                            <p>جرب أداة تبديل الوجه</p>
+                        </div>
+                        
+                        <div class="quick-action-card" onclick="showSection('credits')">
+                            <i class="fas fa-gift"></i>
+                            <h4>شحن رصيد</h4>
+                            <p>احصل على عروض حصرية</p>
+                        </div>
+                        
+                        <div class="quick-action-card" onclick="showSection('support')">
+                            <i class="fas fa-headset"></i>
+                            <h4>مساعدة فنية</h4>
+                            <p>تواصل مع الدعم</p>
+                        </div>
+                    </div>
+                    
+                    <!-- آخر الفيديوهات -->
+                    <div class="videos-section">
+                        <div class="videos-header">
+                            <h3>آخر الفيديوهات</h3>
+                            <button class="btn btn-outline" onclick="showSection('videos')">
+                                عرض الكل
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="videos-grid" id="recentVideos">
+                            <!-- ستتحقق عبر JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قسم فيديوهاتي -->
+                <div id="videosSection" class="dashboard-section">
+                    <div class="dashboard-header">
+                        <h1>فيديوهاتي</h1>
+                        <button class="btn btn-primary" onclick="showSection('upload')">
+                            <i class="fas fa-plus"></i>
+                            رفع فيديو جديد
+                        </button>
+                    </div>
+                    
+                    <div class="videos-section">
+                        <div class="videos-header">
+                            <h3>جميع الفيديوهات</h3>
+                            <div class="search-box">
+                                <input type="text" placeholder="بحث عن فيديو..." id="searchVideos">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="videos-grid" id="allVideos">
+                            <!-- ستتحقق عبر JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قسم رفع فيديو -->
+                <div id="uploadSection" class="dashboard-section">
+                    <div class="dashboard-header">
+                        <h1>رفع فيديو جديد</h1>
+                    </div>
+                    
+                    <div class="videos-section">
+                        <div class="upload-area-modal" onclick="document.getElementById('dashboardVideoInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h3>اسحب وأفلت الفيديو هنا</h3>
+                            <p>أو اضغط لاختيار ملف</p>
+                            <p class="file-info">mp4, mov, avi (أقصى حجم 100MB)</p>
+                            <input type="file" id="dashboardVideoInput" accept="video/*" style="display: none;">
+                        </div>
+                        
+                        <div id="uploadProgress" style="display: none;">
+                            <div class="progress-info">
+                                <span>جاري الرفع...</span>
+                                <span id="uploadPercent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="uploadProgressFill"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="options-section">
+                            <h3>خيارات المعالجة</h3>
+                            <div class="options-grid">
+                                <label class="option-item">
+                                    <input type="checkbox" id="dashboardEnhance" checked>
+                                    <i class="fas fa-magic"></i>
+                                    <span>تحسين الجودة</span>
+                                </label>
+                                <label class="option-item">
+                                    <input type="checkbox" id="dashboardStabilize" checked>
+                                    <i class="fas fa-balance-scale"></i>
+                                    <span>تثبيت الفيديو</span>
+                                </label>
+                                <label class="option-item">
+                                    <input type="checkbox" id="dashboardUpscale">
+                                    <i class="fas fa-expand"></i>
+                                    <span>رفع الدقة</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-block" onclick="uploadVideo()" id="uploadBtn">
+                            ابدأ المعالجة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- قسم الرصيد -->
+                <div id="creditsSection" class="dashboard-section">
+                    <div class="dashboard-header">
+                        <h1>الرصيد والباقات</h1>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="currentCredits">3</div>
+                            <div class="stat-label">الرصيد الحالي</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="usedCredits">0</div>
+                            <div class="stat-label">مستعمل هذا الشهر</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalCredits">3</div>
+                            <div class="stat-label">حد الباقة</div>
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-grid" style="grid-template-columns: repeat(3,1fr); margin-top: 30px;">
+                        <!-- بطاقات الباقات ستتحقق عبر JavaScript -->
+                    </div>
+                </div>
+
+                <!-- قسم الإعدادات -->
+                <div id="settingsSection" class="dashboard-section">
+                    <div class="dashboard-header">
+                        <h1>الإعدادات</h1>
+                    </div>
+                    
+                    <div class="videos-section">
+                        <form onsubmit="updateSettings(event)">
+                            <div class="form-group">
+                                <label>الاسم الكامل</label>
+                                <input type="text" id="settingsName" value="">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>البريد الإلكتروني</label>
+                                <input type="email" id="settingsEmail" value="" readonly>
+                                <small>لا يمكن تغيير البريد الإلكتروني</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>كلمة المرور الجديدة</label>
+                                <input type="password" id="newPassword" placeholder="اترك فارغاً إذا لا تريد التغيير">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>تأكيد كلمة المرور</label>
+                                <input type="password" id="confirmPassword" placeholder="أعد إدخال كلمة المرور">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>اللغة</label>
+                                <select id="language">
+                                    <option value="ar">العربية</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // متغيرات عامة
+        // ============================================
+        let currentUser = null;
+        let userVideos = [];
+        let activityChart = null;
+        
+        // ============================================
+        // تهيئة الصفحة
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            initTheme();
+            loadUserData();
+            loadVideos();
+            initChart();
+            updateDate();
+        });
+        
+        // ============================================
+        // التحقق من تسجيل الدخول
+        // ============================================
+        async function checkAuth() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user) {
+                // إذا لم يكن مسجل دخول، توجه إلى الصفحة الرئيسية
+                window.location.href = '/';
+                return;
+            }
+            
+            currentUser = user;
+            displayUserInfo();
+        }
+        
+        // ============================================
+        // عرض معلومات المستخدم
+        // ============================================
+        function displayUserInfo() {
+            document.getElementById('sidebarName').textContent = currentUser.user_metadata?.full_name || 'مستخدم';
+            document.getElementById('sidebarEmail').textContent = currentUser.email;
+            document.getElementById('sidebarAvatar').src = currentUser.user_metadata?.avatar_url || 'https://www.gravatar.com/avatar/?d=mp';
+            
+            // جلب معلومات الباقة
+            const plan = currentUser.user_metadata?.plan || 'free';
+            const planNames = {
+                free: 'باقة مجانية',
+                pro: 'باقة احترافية',
+                unlimited: 'باقة غير محدودة'
+            };
+            document.getElementById('sidebarPlan').textContent = planNames[plan] || 'باقة مجانية';
+        }
+        
+        // ============================================
+        // تحميل بيانات المستخدم
+        // ============================================
+        async function loadUserData() {
+            try {
+                const response = await fetch(`/.netlify/functions/user-stats?userId=${currentUser.id}`);
+                const data = await response.json();
+                
+                document.getElementById('totalVideos').textContent = data.videosCount || 0;
+                document.getElementById('totalMinutes').textContent = data.totalMinutes || 0;
+                document.getElementById('availableCredits').textContent = data.credits || 3;
+                document.getElementById('storageUsed').textContent = formatBytes(data.storageUsed || 0);
+                
+                document.getElementById('currentCredits').textContent = data.credits || 3;
+                document.getElementById('usedCredits').textContent = data.usedCredits || 0;
+                document.getElementById('totalCredits').textContent = data.totalCredits || 3;
+                
+            } catch (error) {
+                console.error('فشل في تحميل بيانات المستخدم:', error);
+            }
+        }
+        
+        // ============================================
+        // تحميل الفيديوهات
+        // ============================================
+        async function loadVideos() {
+            try {
+                const response = await fetch(`/.netlify/functions/user-videos?userId=${currentUser.id}`);
+                const data = await response.json();
+                
+                userVideos = data.videos || [];
+                displayRecentVideos();
+                displayAllVideos();
+                
+            } catch (error) {
+                console.error('فشل في تحميل الفيديوهات:', error);
+            }
+        }
+        
+        // ============================================
+        // عرض آخر الفيديوهات
+        // ============================================
+        function displayRecentVideos() {
+            const container = document.getElementById('recentVideos');
+            const recent = userVideos.slice(0, 4);
+            
+            if (recent.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                        <i class="fas fa-video" style="font-size: 48px; color: var(--text-secondary);"></i>
+                        <p style="color: var(--text-secondary); margin-top: 10px;">لا توجد فيديوهات بعد</p>
+                        <button class="btn btn-primary" onclick="showSection('upload')" style="margin-top: 20px;">
+                            ارفع أول فيديو
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = recent.map(video => `
+                <div class="video-item">
+                    <div class="video-thumbnail">
+                        <video src="${video.video_url}" muted></video>
+                        <span class="video-duration">${formatDuration(video.duration)}</span>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">${video.title || 'فيديو بدون عنوان'}</div>
+                        <div class="video-date">${new Date(video.created_at).toLocaleDateString('ar')}</div>
+                        <div class="video-actions">
+                            <a href="${video.video_url}" download class="btn-download">
+                                <i class="fas fa-download"></i>
+                            </a>
+                            <button class="btn-delete" onclick="deleteVideo('${video.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="btn-edit" onclick="editVideo('${video.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // ============================================
+        // عرض جميع الفيديوهات
+        // ============================================
+        function displayAllVideos() {
+            const container = document.getElementById('allVideos');
+            
+            if (userVideos.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                        <i class="fas fa-video" style="font-size: 48px; color: var(--text-secondary);"></i>
+                        <p style="color: var(--text-secondary); margin-top: 10px;">لا توجد فيديوهات بعد</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = userVideos.map(video => `
+                <div class="video-item">
+                    <div class="video-thumbnail">
+                        <video src="${video.video_url}" muted></video>
+                        <span class="video-duration">${formatDuration(video.duration)}</span>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">${video.title || 'فيديو بدون عنوان'}</div>
+                        <div class="video-date">${new Date(video.created_at).toLocaleDateString('ar')}</div>
+                        <div class="video-actions">
+                            <a href="${video.video_url}" download class="btn-download">
+                                <i class="fas fa-download"></i>
+                            </a>
+                            <button class="btn-delete" onclick="deleteVideo('${video.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="btn-edit" onclick="editVideo('${video.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // ============================================
+        // حذف فيديو
+        // ============================================
+        async function deleteVideo(videoId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الفيديو؟')) return;
+            
+            try {
+                const response = await fetch('/.netlify/functions/delete-video', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ videoId, userId: currentUser.id })
+                });
+                
+                if (response.ok) {
+                    showNotification('تم حذف الفيديو بنجاح', 'success');
+                    loadVideos(); // إعادة تحميل الفيديوهات
+                }
+            } catch (error) {
+                showNotification('فشل في حذف الفيديو', 'error');
+            }
+        }
+        
+        // ============================================
+        // تهيئة الرسم البياني
+        // ============================================
+        function initChart() {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            
+            activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+                    datasets: [{
+                        label: 'عدد المعالجات',
+                        data: [2, 4, 3, 5, 2, 3, 4],
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // ============================================
+        // تحديث الرسم البياني
+        // ============================================
+        function updateChart() {
+            const period = document.getElementById('chartPeriod').value;
+            
+            // محاكاة تحديث البيانات
+            let data = [];
+            let labels = [];
+            
+            if (period === 'week') {
+                labels = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الجمعة'];
+                data = [2, 4, 3, 5, 2, 3, 4];
+            } else if (period === 'month') {
+                labels = ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'];
+                data = [10, 15, 12, 18];
+            } else {
+                labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'];
+                data = [25, 30, 28, 35, 32, 40];
+            }
+            
+            activityChart.data.labels = labels;
+            activityChart.data.datasets[0].data = data;
+            activityChart.update();
+        }
+        
+        // ============================================
+        // تبديل الأقسام
+        // ============================================
+        function showSection(section) {
+            // إخفاء جميع الأقسام
+            document.querySelectorAll('.dashboard-section').forEach(s => {
+                s.classList.remove('active');
+            });
+            
+            // إظهار القسم المطلوب
+            document.getElementById(section + 'Section').classList.add('active');
+            
+            // تحديث الروابط النشطة
+            document.querySelectorAll('.sidebar-nav a').forEach(a => {
+                a.classList.remove('active');
+            });
+            event.target.closest('a').classList.add('active');
+            
+            // إغلاق القائمة في الجوال
+            document.getElementById('sidebar').classList.remove('active');
+        }
+        
+        // ============================================
+        // تبديل الشريط الجانبي في الجوال
+        // ============================================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        
+        // ============================================
+        // رفع فيديو جديد
+        // ============================================
+        async function uploadVideo() {
+            const fileInput = document.getElementById('dashboardVideoInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('الرجاء اختيار فيديو أولاً', 'error');
+                return;
+            }
+            
+            // إظهار شريط التقدم
+            document.getElementById('uploadProgress').style.display = 'block';
+            document.getElementById('uploadBtn').disabled = true;
+            
+            // تجميع الخيارات
+            const options = {
+                enhance: document.getElementById('dashboardEnhance').checked,
+                stabilize: document.getElementById('dashboardStabilize').checked,
+                upscale: document.getElementById('dashboardUpscale').checked
+            };
+            
+            // محاكاة التقدم
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                document.getElementById('uploadProgressFill').style.width = progress + '%';
+                document.getElementById('uploadPercent').textContent = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    setTimeout(() => {
+                        showNotification('تم رفع الفيديو ومعالجته بنجاح!', 'success');
+                        document.getElementById('uploadProgress').style.display = 'none';
+                        document.getElementById('uploadBtn').disabled = false;
+                        fileInput.value = '';
+                        loadVideos(); // تحديث قائمة الفيديوهات
+                    }, 500);
+                }
+            }, 500);
+        }
+        
+        // ============================================
+        // تحديث التاريخ
+        // ============================================
+        function updateDate() {
+            const date = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = date.toLocaleDateString('ar', options);
+        }
+        
+        // ============================================
+        // دوال مساعدة
+        // ============================================
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 MB';
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+            return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+        }
+        
+        function formatDuration(seconds) {
+            if (!seconds) return '00:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // ============================================
+        // تحديث الإعدادات
+        // ============================================
+        function updateSettings(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('settingsName').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                showNotification('كلمة المرور غير متطابقة', 'error');
+                return;
+            }
+            
+            showNotification('تم تحديث الإعدادات بنجاح', 'success');
+        }
+        
+        // ============================================
+        // نظام الوضع الليلي
+        // ============================================
+        function initTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            const savedTheme = localStorage.getItem('theme');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+        
+        // ============================================
+        // تسجيل الخروج
+        // ============================================
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+        
+        // جعل الدوال متاحة عالمياً
+        window.showSection = showSection;
+        window.toggleSidebar = toggleSidebar;
+        window.uploadVideo = uploadVideo;
+        window.deleteVideo = deleteVideo;
+        window.updateChart = updateChart;
+        window.updateSettings = updateSettings;
+        window.logout = logout;
+    </script>
+</body>
+                      </html>
