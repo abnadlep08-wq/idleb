@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تبديل الوجه - Idleb X IA</title>
+    
+    <!-- SEO -->
+    <meta name="description" content="بدل وجهك على أي فيديو باستخدام الذكاء الاصطناعي. ارفع صورتك وأي فيديو وشاهد النتيجة خلال ثوان">
+    <meta name="keywords" content="تبديل الوجه, وجه على فيديو, ديب فيك, ذكاء اصطناعي">
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* تنسيقات إضافية خاصة بصفحة تبديل الوجه */
+        .face-swap-page {
+            padding-top: 100px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .face-swap-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px;
+            background: var(--bg);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border);
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .upload-card {
+            background: var(--card-bg);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        
+        .upload-card:hover {
+            border-color: var(--primary);
+            background: var(--bg);
+            transform: translateY(-5px);
+        }
+        
+        .upload-card.has-file {
+            border-style: solid;
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+        
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+        }
+        
+        .upload-card h3 {
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        
+        .upload-card p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .file-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 20px;
+        }
+        
+        .preview-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .preview-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .preview-card h3 {
+            color: var(--text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preview-card h3 i {
+            color: var(--primary);
+        }
+        
+        .preview-media {
+            width: 100%;
+            height: 250px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-media img,
+        .preview-media video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .options-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+        
+        .options-section h3 {
+            color: var(--text);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            transition: background var(--transition-fast);
+        }
+        
+        .option-item:hover {
+            background: var(--bg);
+        }
+        
+        .option-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+        
+        .option-item label {
+            color: var(--text);
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .option-item i {
+            color: var(--primary);
+            width: 24px;
+        }
+        
+        .process-button {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .process-button.processing {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        
+        .process-button.processing::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .progress-section {
+            margin-bottom: 30px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: var(--border);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .result-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            border: 1px solid var(--border);
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-header i {
+            font-size: 32px;
+            color: #10B981;
+        }
+        
+        .result-header h3 {
+            color: var(--text);
+            font-size: 1.5rem;
+        }
+        
+        .result-video {
+            width: 100%;
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error-message {
+            background: #FEE2E2;
+            color: #EF4444;
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .success-message {
+            background: #D1FAE5;
+            color: #10B981;
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .credits-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 30px;
+        }
+        
+        .credits-info i {
+            font-size: 24px;
+        }
+        
+        .credits-count {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        @media (max-width: 768px) {
+            .face-swap-container {
+                padding: 20px;
+            }
+            
+            .upload-section,
+            .preview-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <span class="logo-icon">✨</span>
+                    Idleb <span>X IA</span>
+                </a>
+                
+                <div class="nav-menu" id="navMenu">
+                    <a href="/" class="nav-link">الرئيسية</a>
+                    <a href="/#features" class="nav-link">المميزات</a>
+                    <a href="/#pricing" class="nav-link">الباقات</a>
+                    <a href="/#contact" class="nav-link">اتصل بنا</a>
+                </div>
+                
+                <div class="nav-buttons" id="navButtons">
+                    <button class="theme-toggle" id="themeToggle" aria-label="تغيير الوضع">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn btn-outline" onclick="openLoginModal()">تسجيل الدخول</button>
+                    <button class="btn btn-primary" onclick="openSignupModal()">إنشاء حساب</button>
+                </div>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- نافذة تسجيل الدخول -->
+    <div id="authModal" class="modal">
+        <!-- نفس محتوى نافذة تسجيل الدخول من index.html -->
+    </div>
+
+    <!-- محتوى الصفحة -->
+    <div class="face-swap-page">
+        <div class="container">
+            <div class="face-swap-container">
+                <div class="page-title">
+                    <h1>✨ وجّهك على أي فيديو</h1>
+                    <p>ارفع صورتك وأي فيديو، الذكاء الاصطناعي يركب وجهك عليه بدقة واقعية</p>
+                </div>
+                
+                <!-- معلومات الرصيد -->
+                <div class="credits-info" id="creditsInfo">
+                    <i class="fas fa-coins"></i>
+                    <span>الرصيد المتبقي:</span>
+                    <span class="credits-count" id="creditsCount">3</span>
+                    <a href="/pricing.html" class="btn btn-outline-light btn-small">اشحن رصيد</a>
+                </div>
+                
+                <!-- رفع الصورة والفيديو -->
+                <div class="upload-section" id="uploadSection">
+                    <!-- رفع الصورة -->
+                    <div class="upload-card" id="imageUploadCard" onclick="document.getElementById('imageInput').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>ارفع صورتك</h3>
+                        <p>صورة واضحة لوجهك (jpg, png)</p>
+                        <div class="file-info" id="imageFileInfo">لم يتم اختيار صورة</div>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <!-- رفع الفيديو -->
+                    <div class="upload-card" id="videoUploadCard" onclick="document.getElementById('videoInput').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h3>ارفع الفيديو</h3>
+                        <p>mp4, mov, avi (أقصى حجم 100MB)</p>
+                        <div class="file-info" id="videoFileInfo">لم يتم اختيار فيديو</div>
+                        <input type="file" id="videoInput" accept="video/*" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- معاينة الملفات -->
+                <div class="preview-section hidden" id="previewSection">
+                    <div class="preview-card">
+                        <h3><i class="fas fa-camera"></i> صورتي</h3>
+                        <div class="preview-media">
+                            <img id="imagePreview" src="" alt="معاينة الصورة">
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card">
+                        <h3><i class="fas fa-video"></i> الفيديو الأصلي</h3>
+                        <div class="preview-media">
+                            <video id="videoPreview" controls></video>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- خيارات المعالجة -->
+                <div class="options-section hidden" id="optionsSection">
+                    <h3><i class="fas fa-sliders-h"></i> خيارات المعالجة</h3>
+                    <div class="options-grid">
+                        <label class="option-item">
+                            <input type="checkbox" id="enhanceOption" checked>
+                            <i class="fas fa-magic"></i>
+                            <span>تحسين الجودة</span>
+                        </label>
+                        
+                        <label class="option-item">
+                            <input type="checkbox" id="stabilizeOption" checked>
+                            <i class="fas fa-balance-scale"></i>
+                            <span>تثبيت الفيديو</span>
+                        </label>
+                        
+                        <label class="option-item">
+                            <input type="checkbox" id="upscaleOption">
+                            <i class="fas fa-expand"></i>
+                            <span>رفع الدقة إلى 4K</span>
+                        </label>
+                        
+                        <label class="option-item">
+                            <input type="checkbox" id="removeWatermarkOption">
+                            <i class="fas fa-tint"></i>
+                            <span>إزالة العلامة المائية</span>
+                        </label>
+                        
+                        <label class="option-item">
+                            <input type="checkbox" id="smoothOption" checked>
+                            <i class="fas fa-feather"></i>
+                            <span>تنعيم الحواف</span>
+                        </label>
+                        
+                        <label class="option-item">
+                            <input type="checkbox" id="colorMatchOption" checked>
+                            <i class="fas fa-palette"></i>
+                            <span>مطابقة الألوان</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- زر المعالجة -->
+                <button class="btn btn-primary process-button hidden" id="processBtn" onclick="processVideo()">
+                    <i class="fas fa-magic"></i>
+                    ابدأ تبديل الوجه
+                </button>
+                
+                <!-- شريط التقدم -->
+                <div class="progress-section hidden" id="progressSection">
+                    <div class="progress-info">
+                        <span id="progressStatus">جاري رفع الملفات...</span>
+                        <span id="progressPercentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                
+                <!-- النتيجة -->
+                <div class="result-section hidden" id="resultSection">
+                    <div class="result-header">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>تمت المعالجة بنجاح!</h3>
+                    </div>
+                    
+                    <video class="result-video" id="resultVideo" controls></video>
+                    
+                    <div class="result-actions">
+                        <a href="#" class="btn btn-primary" id="downloadBtn" download>
+                            <i class="fas fa-download"></i>
+                            تحميل الفيديو
+                        </a>
+                        <button class="btn btn-outline" onclick="resetForm()">
+                            <i class="fas fa-redo"></i>
+                            معالجة فيديو آخر
+                        </button>
+                        <button class="btn btn-outline" onclick="shareVideo()">
+                            <i class="fas fa-share"></i>
+                            مشاركة
+                        </button>
+                    </div>
+                    
+                    <!-- روابط المشاركة -->
+                    <div class="share-links hidden" id="shareLinks">
+                        <a href="#" onclick="shareOn('facebook')" class="share-btn facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" onclick="shareOn('twitter')" class="share-btn twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" onclick="shareOn('whatsapp')" class="share-btn whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" onclick="shareOn('telegram')" class="share-btn telegram">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // متغيرات عامة
+        // ============================================
+        let imageFile = null;
+        let videoFile = null;
+        let processedVideoUrl = null;
+        let credits = 3;
+        
+        const API_KEY = "mhk_live_ZnPCEcaXww2XIhgvJUMhRHOhbXCEWZqHETWY5os85mfx0hfMRuU3CDMRx75op3l4U8sjqG2Fqd0LnKR9";
+        
+        // ============================================
+        // رفع الصورة
+        // ============================================
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // التحقق من نوع الملف
+            if (!file.type.startsWith('image/')) {
+                showError('الرجاء اختيار ملف صورة صالح');
+                return;
+            }
+            
+            // التحقق من الحجم (10 ميجابايت كحد أقصى)
+            if (file.size > 10 * 1024 * 1024) {
+                showError('حجم الصورة كبير جداً. الحد الأقصى 10 ميجابايت');
+                return;
+            }
+            
+            imageFile = file;
+            
+            // تحديث معلومات الملف
+            document.getElementById('imageFileInfo').innerHTML = `
+                <i class="fas fa-check-circle" style="color: #10B981;"></i>
+                ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+            `;
+            
+            // إضافة كلاس has-file
+            document.getElementById('imageUploadCard').classList.add('has-file');
+            
+            // عرض معاينة الصورة
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            
+            checkFiles();
+        });
+        
+        // ============================================
+        // رفع الفيديو
+        // ============================================
+        document.getElementById('videoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // التحقق من نوع الملف
+            if (!file.type.startsWith('video/')) {
+                showError('الرجاء اختيار ملف فيديو صالح');
+                return;
+            }
+            
+            // التحقق من الحجم (100 ميجابايت كحد أقصى)
+            if (file.size > 100 * 1024 * 1024) {
+                showError('حجم الفيديو كبير جداً. الحد الأقصى 100 ميجابايت');
+                return;
+            }
+            
+            videoFile = file;
+            
+            // تحديث معلومات الملف
+            document.getElementById('videoFileInfo').innerHTML = `
+                <i class="fas fa-check-circle" style="color: #10B981;"></i>
+                ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+            `;
+            
+            // إضافة كلاس has-file
+            document.getElementById('videoUploadCard').classList.add('has-file');
+            
+            // عرض معاينة الفيديو
+            const url = URL.createObjectURL(file);
+            document.getElementById('videoPreview').src = url;
+            
+            checkFiles();
+        });
+        
+        // ============================================
+        // التحقق من اكتمال الملفات
+        // ============================================
+        function checkFiles() {
+            if (imageFile && videoFile) {
+                // إخفاء رفع الملفات
+                document.getElementById('uploadSection').style.display = 'none';
+                
+                // إظهار المعاينة والخيارات
+                document.getElementById('previewSection').classList.remove('hidden');
+                document.getElementById('optionsSection').classList.remove('hidden');
+                document.getElementById('processBtn').classList.remove('hidden');
+            }
+        }
+        
+        // ============================================
+        // معالجة الفيديو
+        // ============================================
+        async function processVideo() {
+            if (!imageFile || !videoFile) {
+                showError('الرجاء اختيار الصورة والفيديو أولاً');
+                return;
+            }
+            
+            // التحقق من الرصيد
+            if (credits <= 0) {
+                showError('رصيدك غير كافٍ. الرجاء شحن الرصيد');
+                return;
+            }
+            
+            // إخفاء زر المعالجة وإظهار شريط التقدم
+            document.getElementById('processBtn').classList.add('hidden');
+            document.getElementById('progressSection').classList.remove('hidden');
+            
+            // تجميع الخيارات
+            const options = {
+                enhance: document.getElementById('enhanceOption').checked,
+                stabilize: document.getElementById('stabilizeOption').checked,
+                upscale: document.getElementById('upscaleOption').checked,
+                removeWatermark: document.getElementById('removeWatermarkOption').checked,
+                smooth: document.getElementById('smoothOption').checked,
+                colorMatch: document.getElementById('colorMatchOption').checked
+            };
+            
+            try {
+                // محاكاة التقدم
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 5;
+                    if (progress >= 100) progress = 100;
+                    
+                    document.getElementById('progressFill').style.width = `${progress}%`;
+                    document.getElementById('progressPercentage').textContent = `${Math.round(progress)}%`;
+                    
+                    if (progress < 30) {
+                        document.getElementById('progressStatus').textContent = 'جاري رفع الملفات...';
+                    } else if (progress < 60) {
+                        document.getElementById('progressStatus').textContent = 'جاري تحليل الصورة والفيديو...';
+                    } else if (progress < 90) {
+                        document.getElementById('progressStatus').textContent = 'تطبيق تبديل الوجه...';
+                    } else {
+                        document.getElementById('progressStatus').textContent = 'اللمسات الأخيرة...';
+                    }
+                    
+                    if (progress === 100) {
+                        clearInterval(progressInterval);
+                        
+                        // خصم رصيد
+                        credits--;
+                        document.getElementById('creditsCount').textContent = credits;
+                        
+                        // فيديو تجريبي - استبدلها بالاستجابة الحقيقية من API
+                        setTimeout(() => {
+                            const mockVideoUrl = "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+                            
+                            document.getElementById('progressSection').classList.add('hidden');
+                            document.getElementById('resultSection').classList.remove('hidden');
+                            document.getElementById('resultVideo').src = mockVideoUrl;
+                            document.getElementById('downloadBtn').href = mockVideoUrl;
+                            
+                            processedVideoUrl = mockVideoUrl;
+                            
+                            showSuccess('تم تبديل الوجه بنجاح!');
+                        }, 500);
+                        
+                        /* 
+                        // الكود الحقيقي للاتصال بـ API
+                        const formData = new FormData();
+                        formData.append('image', imageFile);
+                        formData.append('video', videoFile);
+                        formData.append('options', JSON.stringify(options));
+                        
+                        const response = await fetch('/.netlify/functions/face-swap', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            document.getElementById('progressSection').classList.add('hidden');
+                            document.getElementById('resultSection').classList.remove('hidden');
+                            document.getElementById('resultVideo').src = data.videoUrl;
+                            document.getElementById('downloadBtn').href = data.videoUrl;
+                            
+                            processedVideoUrl = data.videoUrl;
+                            
+                            showSuccess('تم تبديل الوجه بنجاح!');
+                        } else {
+                            throw new Error(data.error || 'فشلت المعالجة');
+                        }
+                        */
+                    }
+                }, 200);
+                
+            } catch (error) {
+                showError(error.message);
+                resetForm();
+            }
+        }
+        
+        // ============================================
+        // إعادة تعيين النموذج
+        // ============================================
+        function resetForm() {
+            imageFile = null;
+            videoFile = null;
+            processedVideoUrl = null;
+            
+            // إعادة تعيين حقول الإدخال
+            document.getElementById('imageInput').value = '';
+            document.getElementById('videoInput').value = '';
+            
+            // إعادة تعيين معلومات الملفات
+            document.getElementById('imageFileInfo').innerHTML = 'لم يتم اختيار صورة';
+            document.getElementById('videoFileInfo').innerHTML = 'لم يتم اختيار فيديو';
+            
+            // إزالة كلاس has-file
+            document.getElementById('imageUploadCard').classList.remove('has-file');
+            document.getElementById('videoUploadCard').classList.remove('has-file');
+            
+            // إظهار رفع الملفات
+            document.getElementById('uploadSection').style.display = 'grid';
+            
+            // إخفاء جميع الأقسام الأخرى
+            document.getElementById('previewSection').classList.add('hidden');
+            document.getElementById('optionsSection').classList.add('hidden');
+            document.getElementById('processBtn').classList.add('hidden');
+            document.getElementById('progressSection').classList.add('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            document.getElementById('shareLinks').classList.add('hidden');
+            
+            // تنظيف روابط المعاينة
+            URL.revokeObjectURL(document.getElementById('videoPreview').src);
+        }
+        
+        // ============================================
+        // مشاركة الفيديو
+        // ============================================
+        function shareVideo() {
+            document.getElementById('shareLinks').classList.toggle('hidden');
+        }
+        
+        function shareOn(platform) {
+            if (!processedVideoUrl) return;
+            
+            const text = encodeURIComponent('شاهد هذا الفيديو الرهيب بعد تبديل الوجه باستخدام Idleb X IA!');
+            const url = encodeURIComponent(processedVideoUrl);
+            
+            let shareUrl = '';
+            
+            switch(platform) {
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+                    break;
+                case 'whatsapp':
+                    shareUrl = `https://wa.me/?text=${text}%20${url}`;
+                    break;
+                case 'telegram':
+                    shareUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+                    break;
+            }
+            
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+        
+        // ============================================
+        // إظهار الإشعارات
+        // ============================================
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            
+            document.querySelector('.face-swap-container').prepend(errorDiv);
+            
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            
+            document.querySelector('.face-swap-container').prepend(successDiv);
+            
+            setTimeout(() => successDiv.remove(), 3000);
+        }
+        
+        // ============================================
+        // التحقق من رصيد المستخدم
+        // ============================================
+        async function checkUserCredits() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (user) {
+                try {
+                    const response = await fetch(`/.netlify/functions/user-credits?userId=${user.id}`);
+                    const data = await response.json();
+                    
+                    credits = data.credits || 3;
+                    document.getElementById('creditsCount').textContent = credits;
+                } catch (error) {
+                    console.error('فشل في جلب الرصيد:', error);
+                }
+            } else {
+                // مستخدم زائر - عرض الرصيد الافتراضي
+                credits = 3;
+                document.getElementById('creditsCount').textContent = credits;
+            }
+        }
+        
+        // ============================================
+        // تهيئة الصفحة
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            checkUserCredits();
+            initTheme();
+        });
+        
+        // ============================================
+        // نظام الوضع الليلي
+        // ============================================
+        function initTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            if (!themeToggle) return;
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+        
+        // دوال المصادقة (مشتركة)
+        window.openLoginModal = function() {
+            const modal = document.getElementById('authModal');
+            if (modal) modal.style.display = 'block';
+        };
+        
+        window.openSignupModal = function() {
+            const modal = document.getElementById('authModal');
+            if (modal) modal.style.display = 'block';
+        };
+    </script>
+</body>
+  </html>
