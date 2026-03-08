@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idleb X IA - منصة تبديل الوجه بالذكاء الاصطناعي</title>
+    
+    <!-- تحسين محركات البحث -->
+    <meta name="description" content="منصة Idleb X IA لتغيير الوجه في الفيديوهات باستخدام الذكاء الاصطناعي. جرب مجاناً الآن!">
+    <meta name="keywords" content="تبديل الوجه, ذكاء اصطناعي, تعديل فيديو, وجه في فيديو">
+    
+    <!-- خطوط وأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- ملف التنسيقات -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- تفعيل PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#8B5CF6">
+</head>
+<body class="light-mode">
+    <!-- شريط التحميل -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- شريط التنقل الذكي -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <span class="logo-icon">✨</span>
+                    Idleb <span>X IA</span>
+                </a>
+                
+                <div class="nav-menu" id="navMenu">
+                    <a href="#home" class="nav-link active">الرئيسية</a>
+                    <a href="#features" class="nav-link">المميزات</a>
+                    <a href="#how-it-works" class="nav-link">كيف يعمل</a>
+                    <a href="#pricing" class="nav-link">الباقات</a>
+                    <a href="#testimonials" class="nav-link">آراء العملاء</a>
+                    <a href="#contact" class="nav-link">اتصل بنا</a>
+                </div>
+                
+                <div class="nav-buttons" id="navButtons">
+                    <button class="theme-toggle" id="themeToggle" aria-label="تغيير الوضع">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn btn-outline" onclick="openLoginModal()">تسجيل الدخول</button>
+                    <button class="btn btn-primary" onclick="openSignupModal()">إنشاء حساب</button>
+                </div>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="القائمة">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- القسم الرئيسي مع فيديو خلفية -->
+    <section id="home" class="hero">
+        <div class="hero-video-background">
+            <video autoplay muted loop playsinline>
+                <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge" data-aos="fade-up">
+                    <span class="badge">🚀 مدعوم بالذكاء الاصطناعي</span>
+                </div>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">
+                    حول وجهك إلى نجم
+                    <span class="gradient-text">أي فيديو</span>
+                </h1>
+                <p class="hero-description" data-aos="fade-up" data-aos-delay="200">
+                    ارفع صورتك وأي فيديو، وخلال ثوان يصير وجهك هو بطل الفيديو. 
+                    جرب الآن مجاناً بدون بطاقة ائتمان!
+                </p>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="300">
+                    <a href="face-swap.html" class="btn btn-primary btn-large">
+                        <i class="fas fa-magic"></i>
+                        ابدأ تبديل الوجه مجاناً
+                    </a>
+                    <button class="btn btn-outline-light btn-large" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-play"></i>
+                        شاهد كيف يعمل
+                    </button>
+                </div>
+                
+                <!-- إحصائيات حية -->
+                <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-item">
+                        <span class="stat-number" id="liveVideosCount">0</span>
+                        <span class="stat-label">فيديو معالج</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="liveUsersCount">0</span>
+                        <span class="stat-label">مستخدم نشط</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">رضا العملاء</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم المميزات -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-subtitle">المميزات</span>
+                <h2 class="section-title">كل ما تحتاجه في <span>مكان واحد</span></h2>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-face-smile"></i>
+                    </div>
+                    <h3>وجوه واقعية</h3>
+                    <p>تقنية ذكاء اصطناعي متطورة تجعل الوجه الجديد يتحرك بشكل طبيعي مع تعابير الفيديو</p>
+                    <div class="feature-hover-effect"></div>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>سرعة خارقة</h3>
+                    <p>معالجة فيديوهاتك في ثوانٍ فقط بفضل أقوى الخوادم السحابية</p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>خصوصية تامة</h3>
+                    <p>نقوم بحذف ملفاتك فور الانتهاء من المعالجة، ولا نشاركها مع أي جهة</p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>جميع الصيغ</h3>
+                    <p>يدعم MP4, MOV, AVI, MKV وحتى صيغ الجوالات</p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>رفع سحابي</h3>
+                    <p>ارفع فيديوهات حتى 2 جيجابايت بكل سهولة</p>
+                </div>
+                
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>متوافق مع الجوال</h3>
+                    <p>اشتغل على أي جهاز في أي وقت</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم كيف يعمل -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-subtitle">كيف يعمل</span>
+                <h2 class="section-title">ثلاث خطوات فقط <span>لنتيجة مذهلة</span></h2>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step-item" data-aos="fade-left" data-aos-delay="100">
+                    <div class="step-number-wrapper">
+                        <span class="step-number">1</span>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-icon-wrapper">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>ارفع صورتك</h3>
+                        <p>صورة واضحة لوجهك (سيلفي أو صورة شخصية)</p>
+                        <div class="step-demo">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" alt="مثال صورة">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="step-number-wrapper">
+                        <span class="step-number">2</span>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-icon-wrapper">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h3>ارفع الفيديو</h3>
+                        <p>أي فيديو تبي تظهر فيه (من عندك أو من مكتبتنا)</p>
+                        <div class="step-demo">
+                            <video src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" muted loop></video>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-item" data-aos="fade-right" data-aos-delay="300">
+                    <div class="step-number-wrapper">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-icon-wrapper">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3>حمل النتيجة</h3>
+                        <p>الفيديو الجديد بوجهك أنت جاهز للتحميل</p>
+                        <div class="step-demo">
+                            <video src="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" muted loop></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- زر تجريبي -->
+            <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                <a href="face-swap.html" class="btn btn-primary btn-large">
+                    <i class="fas fa-rocket"></i>
+                    جرب الآن مجاناً
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم إحصائيات المستخدم (للمسجلين) -->
+    <section class="stats-section" id="userStats" style="display: none;">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">إحصائيات <span>حسابك</span></h2>
+            <div class="stats-grid" id="dashboardStats">
+                <!-- تتحقق عبر JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الباقات -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-subtitle">الباقات</span>
+                <h2 class="section-title">اختر الخطة المناسبة <span>لك</span></h2>
+            </div>
+            
+            <div class="pricing-toggle">
+                <span>شهري</span>
+                <label class="switch">
+                    <input type="checkbox" id="pricingToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>سنوي <span class="save-badge">وفر 20%</span></span>
+            </div>
+            
+            <div class="pricing-grid" id="pricingGrid">
+                <!-- بطاقات الباقات تتحقق عبر JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم آراء العملاء -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-subtitle">آراء العملاء</span>
+                <h2 class="section-title">ماذا يقول <span>المستخدمون؟</span></h2>
+            </div>
+            
+            <div class="testimonials-slider" id="testimonialsSlider">
+                <div class="testimonial-card" data-aos="fade-left">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"موقع رهيب! خلال دقيقة ركبت وجهي على فيديو لأخوي وصار يضحك. تقنية فظيعة والنتيجة طبيعية مرة"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="أحمد">
+                        <div>
+                            <h4>أحمد محمد</h4>
+                            <span>مستخدم مجاني</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"صانع محتوى هنا، استخدم Idleb X IA عشان أعمل مقاطع مضحكة للمشتركين. السرعة والدقة شي خيالي، أنصح فيه بقوة"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="سارة">
+                        <div>
+                            <h4>سارة عبدالله</h4>
+                            <span>مشتركة برو</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-right" data-aos-delay="200">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"جربت مواقع كثيرة بس هذا الأفضل. يدعم العربية والتعامل مع الجوال سهل. فريق الدعم متعاون جداً، شكراً لكم"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/62.jpg" alt="خالد">
+                        <div>
+                            <h4>خالد العمري</h4>
+                            <span>مشترك غير محدود</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الأسئلة الشائعة -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-subtitle">الأسئلة الشائعة</span>
+                <h2 class="section-title">أكثر ما يسأل عنه <span>المستخدمون</span></h2>
+            </div>
+            
+            <div class="faq-grid">
+                <div class="faq-item" data-aos="fade-up">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>هل الموقع مجاني بالكامل؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نوفر باقة مجانية تسمح لك بتجربة الخدمة بـ 3 فيديوهات في الشهر. إذا أعجبتك الخدمة، يمكنك الترقية إلى الباقات المدفوعة للحصول على مميزات أكثر.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>كيف أضمن خصوصية صوري وفيديوهاتي؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نحن نهتم بخصوصيتك. جميع ملفاتك مشفرة أثناء النقل، ويتم حذفها تلقائياً من خوادمنا بعد 24 ساعة من المعالجة. لا نشارك ملفاتك مع أي جهة خارجية.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>ما هي صيغ الفيديو المدعومة؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>ندعم جميع الصيغ الشائعة: MP4, MOV, AVI, MKV, WebM, وحتى صيغ الجوالات مثل 3GP. أقصى حجم للملف هو 2 جيجابايت وأقصى مدة 30 دقيقة.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>كيف يمكنني إلغاء اشتراكي؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>يمكنك إلغاء الاشتراك في أي وقت من لوحة التحكم. لن يتم خصم أي مبلغ إضافي بعد الإلغاء، وستبقى مميزات الباقة متاحة حتى نهاية الفترة المدفوعة.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الدردشة المباشرة -->
+    <div class="live-chat" id="liveChat">
+        <button class="chat-button" onclick="toggleChat()">
+            <i class="fas fa-comment"></i>
+            <span class="chat-notification">1</span>
+        </button>
+        
+        <div class="chat-window" id="chatWindow" style="display: none;">
+            <div class="chat-header">
+                <h4>الدعم الفني</h4>
+                <button onclick="toggleChat()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message support">
+                    <p>مرحباً! كيف يمكنني مساعدتك؟</p>
+                    <span>منذ دقيقة</span>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="اكتب رسالتك..." id="chatInput">
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول المنبثقة -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">تسجيل دخول</button>
+                <button class="auth-tab" onclick="switchAuthTab('signup')">إنشاء حساب</button>
+            </div>
+            
+            <!-- تسجيل دخول -->
+            <div id="loginForm" class="auth-form active">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" placeholder="أدخل بريدك" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور" required>
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox">
+                            <input type="checkbox"> تذكرني
+                        </label>
+                        <a href="#" onclick="showForgotPassword()">نسيت كلمة المرور؟</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+                </form>
+                
+                <div class="auth-divider">
+                    <span>أو</span>
+                </div>
+                
+                <button class="btn btn-outline btn-block" onclick="loginWithGoogle()">
+                    <i class="fab fa-google"></i> دخول بحساب Google
+                </button>
+            </div>
+            
+            <!-- إنشاء حساب -->
+            <div id="signupForm" class="auth-form">
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label>الاسم الكامل</label>
+                        <input type="text" id="signupName" placeholder="أدخل اسمك" required>
+                    </div>
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="signupEmail" placeholder="أدخل بريدك" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="signupPassword" placeholder="أدخل كلمة المرور" required>
+                    </div>
+                    <div class="form-group">
+                        <label>تأكيد كلمة المرور</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="أعد إدخال كلمة المرور" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox">
+                            <input type="checkbox" required> أوافق على <a href="#">الشروط والأحكام</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">إنشاء حساب</button>
+                </form>
+            </div>
+            
+            <!-- نسيت كلمة السر -->
+            <div id="forgotPasswordForm" class="auth-form">
+                <form onsubmit="handleForgotPassword(event)">
+                    <p>أدخل بريدك الإلكتروني وسنرسل لك رابط استعادة كلمة المرور</p>
+                    <div class="form-group">
+                        <input type="email" id="forgotEmail" placeholder="البريد الإلكتروني" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">إرسال رابط الاستعادة</button>
+                    <button type="button" class="btn btn-outline btn-block" onclick="switchAuthTab('login')">عودة لتسجيل الدخول</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج الاتصال -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-subtitle">اتصل بنا</span>
+                <h2 class="section-title">نحن هنا <span>لنساعدك</span></h2>
+            </div>
+            
+            <div class="contact-wrapper" data-aos="fade-up">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>البريد الإلكتروني</h4>
+                            <a href="mailto:support@idlebxia.com">support@idlebxia.com</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>رقم الدعم</h4>
+                            <a href="tel:+966123456789">+966 12 345 6789</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>ساعات العمل</h4>
+                            <p>24/7 طوال أيام الأسبوع</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form class="contact-form" id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <input type="text" placeholder="الاسم" required>
+                        </div>
+                        <div class="form-group half">
+                            <input type="email" placeholder="البريد الإلكتروني" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="الموضوع" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="رسالتك..." rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">إرسال الرسالة</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- تذييل الصفحة -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <div class="footer-logo">Idleb <span>X IA</span></div>
+                    <p>منصة رائدة في مجال تبديل الوجه بالذكاء الاصطناعي. نقدم أحدث التقنيات وأفضل الخدمات لعملائنا حول العالم.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="فيسبوك"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="انستغرام"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="يوتيوب"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="تيك توك"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>روابط سريعة</h4>
+                    <ul>
+                        <li><a href="#home">الرئيسية</a></li>
+                        <li><a href="#features">المميزات</a></li>
+                        <li><a href="#how-it-works">كيف يعمل</a></li>
+                        <li><a href="#pricing">الباقات</a></li>
+                        <li><a href="#testimonials">آراء العملاء</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>الدعم</h4>
+                    <ul>
+                        <li><a href="#faq">الأسئلة الشائعة</a></li>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">شروط الاستخدام</a></li>
+                        <li><a href="#contact">اتصل بنا</a></li>
+                        <li><a href="#" onclick="openLiveChat()">الدردشة المباشرة</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4>النشرة البريدية</h4>
+                    <p>اشترك ليصلك كل جديد وأحدث العروض</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="بريدك الإلكتروني">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Idleb X IA. جميع الحقوق محفوظة</p>
+                <div class="footer-bottom-links">
+                    <a href="#">سياسة الخصوصية</a>
+                    <a href="#">شروط الاستخدام</a>
+                    <a href="#">خريطة الموقع</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- سكريبتات -->
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
