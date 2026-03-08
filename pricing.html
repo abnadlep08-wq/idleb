@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الباقات والأسعار - Idleb X IA</title>
+    
+    <!-- SEO -->
+    <meta name="description" content="اختر الباقة المناسبة لك. باقة مجانية للبدء، وباقات احترافية للمستخدمين المحترفين">
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* تنسيقات صفحة الباقات */
+        .pricing-page {
+            padding-top: 100px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .pricing-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        .pricing-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .pricing-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .pricing-toggle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .toggle-label {
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .toggle-label .save-badge {
+            background: #10B981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+        
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .slider.round {
+            border-radius: 34px;
+        }
+        
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px 30px;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+            position: relative;
+            border: 2px solid transparent;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .pricing-card.popular {
+            border: 2px solid var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4px 20px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-header h3 {
+            font-size: 1.8rem;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            -webkit-text-fill-color: var(--text-secondary);
+        }
+        
+        .yearly-price {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        .pricing-features {
+            margin-bottom: 30px;
+        }
+        
+        .pricing-features ul {
+            list-style: none;
+        }
+        
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+        
+        .pricing-features li i {
+            color: #10B981;
+        }
+        
+        .pricing-features li.disabled {
+            color: var(--text-secondary);
+        }
+        
+        .pricing-features li.disabled i {
+            color: #EF4444;
+        }
+        
+        .btn-pricing {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+        
+        /* قسم الأسئلة الشائعة */
+        .faq-section {
+            background: var(--bg);
+            padding: 80px 0;
+        }
+        
+        .faq-grid {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 20px;
+            background: var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question h3 {
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--bg);
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+        }
+        
+        .faq-answer p {
+            padding: 20px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+        
+        /* قسم الضمان */
+        .guarantee-section {
+            padding: 60px 0;
+            background: var(--card-bg);
+            text-align: center;
+        }
+        
+        .guarantee-icon {
+            font-size: 64px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .guarantee-title {
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 15px;
+        }
+        
+        .guarantee-text {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        /* تذييل الصفحة */
+        .pricing-footer {
+            background: var(--bg);
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        
+        .compare-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .compare-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* التجاوب مع الجوال */
+        @media (max-width: 1024px) {
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .pricing-header h1 {
+                font-size: 2rem;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card.popular {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <span class="logo-icon">✨</span>
+                    Idleb <span>X IA</span>
+                </a>
+                
+                <div class="nav-menu" id="navMenu">
+                    <a href="/" class="nav-link">الرئيسية</a>
+                    <a href="/#features" class="nav-link">المميزات</a>
+                    <a href="pricing.html" class="nav-link active">الباقات</a>
+                    <a href="/#contact" class="nav-link">اتصل بنا</a>
+                </div>
+                
+                <div class="nav-buttons" id="navButtons">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn btn-outline" onclick="openLoginModal()">تسجيل الدخول</button>
+                    <button class="btn btn-primary" onclick="openSignupModal()">إنشاء حساب</button>
+                </div>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- نافذة تسجيل الدخول -->
+    <div id="authModal" class="modal">
+        <!-- نفس محتوى نافذة تسجيل الدخول -->
+    </div>
+
+    <!-- قسم الباقات -->
+    <div class="pricing-page">
+        <div class="container">
+            <div class="pricing-header">
+                <h1>الباقات والأسعار</h1>
+                <p>اختر الباقة المناسبة لك. ابدأ مجاناً وجرب الخدمة، ثم قم بالترقية لأي باقة تناسب احتياجاتك</p>
+            </div>
+            
+            <!-- مفتاح التبديل بين شهري/سنوي -->
+            <div class="pricing-toggle-container">
+                <span class="toggle-label">شهري</span>
+                <label class="switch">
+                    <input type="checkbox" id="pricingToggle" onchange="togglePricing()">
+                    <span class="slider round"></span>
+                </label>
+                <span class="toggle-label">
+                    سنوي
+                    <span class="save-badge">وفر 20%</span>
+                </span>
+            </div>
+            
+            <!-- بطاقات الباقات -->
+            <div class="pricing-grid" id="pricingGrid">
+                <!-- ستتحقق عبر JavaScript -->
+            </div>
+            
+            <!-- قسم الضمان -->
+            <div class="guarantee-section">
+                <div class="guarantee-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2 class="guarantee-title">ضمان استعادة الأموال لمدة 30 يوم</h2>
+                <p class="guarantee-text">
+                    إذا لم تكن راضياً عن الخدمة خلال الـ 30 يوم الأولى، يمكنك طلب استرداد كامل المبلغ.
+                    لا أسئلة، لا تعقيدات.
+                </p>
+                <button class="btn btn-primary btn-large" onclick="openSignupModal()">
+                    ابدأ تجربتك المجانية
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- قسم الأسئلة الشائعة -->
+    <div class="faq-section">
+        <div class="container">
+            <h2 class="section-title">الأسئلة <span>الشائعة</span></h2>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>هل يمكنني الترقية أو تخفيض الباقة لاحقاً؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نعم، يمكنك الترقية أو تخفيض الباقة في أي وقت من لوحة التحكم. إذا قمت بالترقية، سيتم تطبيق المبلغ المتبقي من باقتك الحالية على الباقة الجديدة.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>ماذا يحدث إذا استنفدت رصيدي قبل نهاية الشهر؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>يمكنك شراء رصيد إضافي في أي وقت، أو الانتظار حتى بداية الشهر التالي لتجديد رصيدك. جميع المعالجات الإضافية تتطلب رصيداً كافياً.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>هل يوجد حد أقصى لحجم الفيديو؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نعم، يختلف الحد الأقصى حسب الباقة: الباقة المجانية 100 ميجابايت، الباقة الاحترافية 500 ميجابايت، والباقة غير المحدودة 2 جيجابايت.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>كيف أدفع؟ وما هي طرق الدفع المتاحة؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>ندعم جميع بطاقات الائتمان (Visa, MasterCard, American Express) وكذلك PayPal. جميع المدفوعات مشفرة وآمنة 100%.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <h3>هل يمكنني إلغاء الاشتراك في أي وقت؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نعم، يمكنك إلغاء الاشتراك في أي وقت من لوحة التحكم. لن يتم خصم أي مبلغ إضافي بعد الإلغاء، وستبقى الباقة متاحة حتى نهاية الفترة المدفوعة.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <div class="pricing-footer">
+        <div class="container">
+            <p>هل لديك استفسار؟ <a href="/#contact" class="compare-link">اتصل بنا</a></p>
+            <p style="margin-top: 10px; color: var(--text-secondary);">
+                جميع الأسعار بالدولار الأمريكي. الضرائب قد تطبق حسب موقعك.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // بيانات الباقات
+        // ============================================
+        const plans = {
+            monthly: [
+                {
+                    name: 'مجاني',
+                    price: '0',
+                    features: [
+                        '3 معالجات في الشهر',
+                        'مدة فيديو حتى 3 دقائق',
+                        'حجم ملف حتى 100 ميجابايت',
+                        'تأثيرات أساسية',
+                        'دعم عبر البريد الإلكتروني',
+                        'علامة مائية على الفيديو'
+                    ],
+                    disabled: [
+                        'معالجة أولوية',
+                        'دعم فني متميز',
+                        'تصدير بدون علامة مائية'
+                    ],
+                    buttonText: 'ابدأ مجاناً',
+                    popular: false
+                },
+                {
+                    name: 'احترافي',
+                    price: '19',
+                    features: [
+                        '50 معالجة في الشهر',
+                        'مدة فيديو حتى 15 دقيقة',
+                        'حجم ملف حتى 500 ميجابايت',
+                        'جميع التأثيرات المتاحة',
+                        'معالجة أولوية',
+                        'دعم فني عبر الدردشة',
+                        'تصدير بدون علامة مائية'
+                    ],
+                    disabled: [],
+                    buttonText: 'اختر الباقة',
+                    popular: true
+                },
+                {
+                    name: 'غير محدود',
+                    price: '49',
+                    features: [
+                        'معالجة غير محدودة',
+                        'مدة فيديو حتى 60 دقيقة',
+                        'حجم ملف حتى 2 جيجابايت',
+                        'جميع التأثيرات المتاحة',
+                        'معالجة أولوية VIP',
+                        'دعم فني متميز 24/7',
+                        'تصدير بدون علامة مائية',
+                        'API Access للمطورين'
+                    ],
+                    disabled: [],
+                    buttonText: 'اختر الباقة',
+                    popular: false
+                }
+            ],
+            yearly: [
+                {
+                    name: 'مجاني',
+                    price: '0',
+                    yearlyPrice: '0',
+                    features: [
+                        '3 معالجات في الشهر',
+                        'مدة فيديو حتى 3 دقائق',
+                        'حجم ملف حتى 100 ميجابايت',
+                        'تأثيرات أساسية',
+                        'دعم عبر البريد الإلكتروني',
+                        'علامة مائية على الفيديو'
+                    ],
+                    disabled: [
+                        'معالجة أولوية',
+                        'دعم فني متميز',
+                        'تصدير بدون علامة مائية'
+                    ],
+                    buttonText: 'ابدأ مجاناً',
+                    popular: false
+                },
+                {
+                    name: 'احترافي',
+                    price: '15',
+                    yearlyPrice: '180',
+                    features: [
+                        '50 معالجة في الشهر',
+                        'مدة فيديو حتى 15 دقيقة',
+                        'حجم ملف حتى 500 ميجابايت',
+                        'جميع التأثيرات المتاحة',
+                        'معالجة أولوية',
+                        'دعم فني عبر الدردشة',
+                        'تصدير بدون علامة مائية'
+                    ],
+                    disabled: [],
+                    buttonText: 'اختر الباقة',
+                    popular: true
+                },
+                {
+                    name: 'غير محدود',
+                    price: '39',
+                    yearlyPrice: '468',
+                    features: [
+                        'معالجة غير محدودة',
+                        'مدة فيديو حتى 60 دقيقة',
+                        'حجم ملف حتى 2 جيجابايت',
+                        'جميع التأثيرات المتاحة',
+                        'معالجة أولوية VIP',
+                        'دعم فني متميز 24/7',
+                        'تصدير بدون علامة مائية',
+                        'API Access للمطورين'
+                    ],
+                    disabled: [],
+                    buttonText: 'اختر الباقة',
+                    popular: false
+                }
+            ]
+        };
+        
+        // ============================================
+        // عرض الباقات
+        // ============================================
+        function renderPricing(isYearly) {
+            const grid = document.getElementById('pricingGrid');
+            const currentPlans = isYearly ? plans.yearly : plans.monthly;
+            
+            grid.innerHTML = currentPlans.map(plan => `
+                <div class="pricing-card ${plan.popular ? 'popular' : ''}">
+                    ${plan.popular ? '<div class="popular-badge">الأكثر شهرة</div>' : ''}
+                    <div class="pricing-header">
+                        <h3>${plan.name}</h3>
+                        <div class="price">
+                            $${plan.price}<span>/${isYearly ? 'سنة' : 'شهر'}</span>
+                        </div>
+                        ${isYearly && plan.yearlyPrice ? 
+                            `<div class="yearly-price">$${plan.yearlyPrice} سنوياً</div>` : 
+                            ''}
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            ${plan.features.map(f => `
+                                <li><i class="fas fa-check"></i> ${f}</li>
+                            `).join('')}
+                            ${plan.disabled.map(f => `
+                                <li class="disabled"><i class="fas fa-times"></i> ${f}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    <button class="btn ${plan.popular ? 'btn-primary' : 'btn-outline'} btn-pricing" 
+                            onclick="handlePlanSelect('${plan.name}', ${isYearly})">
+                        ${plan.buttonText}
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        // ============================================
+        // التبديل بين شهري/سنوي
+        // ============================================
+        function togglePricing() {
+            const isYearly = document.getElementById('pricingToggle').checked;
+            renderPricing(isYearly);
+        }
+        
+        // ============================================
+        // معالجة اختيار الباقة
+        // ============================================
+        function handlePlanSelect(planName, isYearly) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user) {
+                // إذا لم يكن مسجل دخول، افتح نافذة التسجيل
+                openSignupModal();
+                return;
+            }
+            
+            if (planName === 'مجاني') {
+                // إذا كانت الباقة مجانية، حول المستخدم إليها مباشرة
+                upgradePlan('free', isYearly);
+            } else {
+                // إذا كانت باقة مدفوعة، افتح نافذة الدفع
+                openPaymentModal(planName, isYearly);
+            }
+        }
+        
+        // ============================================
+        // ترقية الباقة
+        // ============================================
+        async function upgradePlan(plan, isYearly) {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                
+                const response = await fetch('/.netlify/functions/upgrade-plan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: user.id,
+                        plan: plan,
+                        isYearly: isYearly
+                    })
+                });
+                
+                if (response.ok) {
+                    showNotification('تم تغيير الباقة بنجاح!', 'success');
+                    
+                    // تحديث بيانات المستخدم
+                    user.user_metadata = user.user_metadata || {};
+                    user.user_metadata.plan = plan;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                showNotification('فشل في تغيير الباقة', 'error');
+            }
+        }
+        
+        // ============================================
+        // فتح نافذة الدفع
+        // ============================================
+        function openPaymentModal(planName, isYearly) {
+            // إنشاء نافذة الدفع المنبثقة
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            
+            const plan = isYearly ? plans.yearly.find(p => p.name === planName) : plans.monthly.find(p => p.name === planName);
+            const amount = isYearly ? plan.yearlyPrice : plan.price;
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    <h2 style="text-align: center; margin-bottom: 30px;">إتمام الدفع</h2>
+                    
+                    <div style="background: var(--card-bg); padding: 20px; border-radius: var(--radius-md); margin-bottom: 20px;">
+                        <h3 style="color: var(--text); margin-bottom: 10px;">ملخص الطلب</h3>
+                        <p style="color: var(--text);">الباقة: <strong>${planName}</strong></p>
+                        <p style="color: var(--text);">المدة: <strong>${isYearly ? 'سنوي' : 'شهري'}</strong></p>
+                        <p style="color: var(--text); font-size: 1.2rem; margin-top: 10px;">
+                            المبلغ: <strong>$${amount}</strong>
+                        </p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 10px; color: var(--text);">طريقة الدفع</label>
+                        <select style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text);">
+                            <option value="credit">بطاقة ائتمان</option>
+                            <option value="paypal">PayPal</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 10px; color: var(--text);">رقم البطاقة</label>
+                        <input type="text" placeholder="1234 5678 9012 3456" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text);">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 10px; color: var(--text);">تاريخ الانتهاء</label>
+                            <input type="text" placeholder="MM/YY" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text);">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 10px; color: var(--text);">CVV</label>
+                            <input type="text" placeholder="123" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text);">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" onclick="processPayment('${planName}', ${isYearly})">
+                        دفع $${amount}
+                    </button>
+                    
+                    <p style="text-align: center; margin-top: 20px; color: var(--text-secondary); font-size: 14px;">
+                        جميع المدفوعات آمنة ومشفرة
+                    </p>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // ============================================
+        // معالجة الدفع
+        // ============================================
+        function processPayment(planName, isYearly) {
+            // محاكاة عملية الدفع
+            showNotification('جاري معالجة الدفع...', 'info');
+            
+            setTimeout(() => {
+                showNotification('تم الدفع بنجاح!', 'success');
+                document.querySelector('.modal').remove();
+                upgradePlan(planName, isYearly);
+            }, 2000);
+        }
+        
+        // ============================================
+        // دوال مساعدة
+        // ============================================
+        function toggleFaq(element) {
+            const faqItem = element.closest('.faq-item');
+            faqItem.classList.toggle('active');
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // ============================================
+        // نظام الوضع الليلي
+        // ============================================
+        function initTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            const savedTheme = localStorage.getItem('theme');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+        
+        // ============================================
+        // تهيئة الصفحة
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPricing(false);
+            initTheme();
+        });
+        
+        // دوال المصادقة (مشتركة)
+        window.openLoginModal = function() {
+            const modal = document.getElementById('authModal');
+            if (modal) modal.style.display = 'block';
+        };
+        
+        window.openSignupModal = function() {
+            const modal = document.getElementById('authModal');
+            if (modal) modal.style.display = 'block';
+        };
+        
+        // جعل الدوال متاحة عالمياً
+        window.togglePricing = togglePricing;
+        window.handlePlanSelect = handlePlanSelect;
+        window.processPayment = processPayment;
+        window.toggleFaq = toggleFaq;
+    </script>
+</body>
+  </html>
