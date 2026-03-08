@@ -1,0 +1,12 @@
+# ============================================
+# ملف robots.txt لمحركات البحث
+# ============================================
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /.netlify/
+Disallow: /dashboard/
+Disallow: /admin/
+
+Sitemap: https://idleb-x-ia.netlify.app/sitemap.xml
